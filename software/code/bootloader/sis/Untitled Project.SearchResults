@@ -1,0 +1,12 @@
+---- isMcuUpdate Matches (11 in 3 files) ----
+Main.c (f:\project\platform\software\mcu\bootloader\trunk\sources):extern BOOL isMcuUpdate;
+Start08.c (f:\project\platform\software\mcu\bootloader\trunk\sources):extern unsigned char isMcuUpdate;
+Start08.c (f:\project\platform\software\mcu\bootloader\trunk\sources):	isMcuUpdate = TRUE;
+System.c (f:\project\platform\software\mcu\bootloader\trunk\source files):BOOL isMcuUpdate = FALSE;
+System.c (f:\project\platform\software\mcu\bootloader\trunk\source files)://	isMcuUpdate = FALSE;
+System.c (f:\project\platform\software\mcu\bootloader\trunk\source files):				isMcuUpdate = TRUE;
+System.c (f:\project\platform\software\mcu\bootloader\trunk\source files):			if((!isMcuUpdate) || (system_para.rx_msg.read_cnt != 0))
+System.c (f:\project\platform\software\mcu\bootloader\trunk\source files):			if(!isMcuUpdate)
+System.c (f:\project\platform\software\mcu\bootloader\trunk\source files):			if(!isMcuUpdate)
+System.c (f:\project\platform\software\mcu\bootloader\trunk\source files):			if(!isMcuUpdate)
+System.c (f:\project\platform\software\mcu\bootloader\trunk\source files):			if((!isMcuUpdate) || isUpdateReqDataPause || (system_para.flash_w_state != SYSTEM_FLASH_WRITE_IDLE))

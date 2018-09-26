@@ -1,0 +1,4 @@
+---- vDiagAppWriteDataByID Matches (3 in 1 files) ----
+DiagAppLayer.c (f:\b20b\mcu\code\newplant\sources\diagnosis):static void vDiagAppWriteDataByID(void);
+DiagAppLayer.c (f:\b20b\mcu\code\newplant\sources\diagnosis):			vDiagAppWriteDataByID();
+DiagAppLayer.c (f:\b20b\mcu\code\newplant\sources\diagnosis):static void vDiagAppWriteDataByID(void)

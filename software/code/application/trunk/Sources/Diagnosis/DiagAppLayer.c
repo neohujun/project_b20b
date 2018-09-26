@@ -1470,6 +1470,8 @@ static void vDiagAppReadDataByID(void)
 					xDiagAppInfo.xDiagAppWriteMsgBuff.xDiagNetWriteMsg[xDiagAppInfo.xDiagAppWriteMsgBuff.Head].Data[j++] = xDiagAppInfo.pxDiagNetReadMsg->Data[1+2*i];
 					xDiagAppInfo.xDiagAppWriteMsgBuff.xDiagNetWriteMsg[xDiagAppInfo.xDiagAppWriteMsgBuff.Head].Data[j++] = xDiagAppInfo.pxDiagNetReadMsg->Data[2+2*i];
 
+					(void)xEepromReadNByte(memoryADDR_VIN, DiagAppVIN, diagappECU_VIN_LENGTH);
+
 					for(t=0; t!=diagappECU_VIN_LENGTH; ++t)
 					{
 						xDiagAppInfo.xDiagAppWriteMsgBuff.xDiagNetWriteMsg[xDiagAppInfo.xDiagAppWriteMsgBuff.Head].Data[j++] = DiagAppVIN[t];

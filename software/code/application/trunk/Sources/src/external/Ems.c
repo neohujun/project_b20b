@@ -55,7 +55,7 @@ void vCanEms3A0ReadHandle(BYTE* pxCanMessage)
 {
 	WORD speed = 0;
 	if((SYSTEM_ACC_IDLE != vSystemAccStatus())  || (!ioBAT_DET_IN))
-	{//开机，关机状态，
+	{//state of starting or shutdown
 		return;
 	}
 	if((!isSystemInitCompleted) || (0 != wEmsCycleTime) || isDiagAppIOSpeed())

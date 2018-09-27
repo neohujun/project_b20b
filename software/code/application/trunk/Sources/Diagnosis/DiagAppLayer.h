@@ -28,13 +28,13 @@ void vDiagAppTask(void);
 void vDiagAppTaskInit(void);
 void vDiagAppTimer(void);
 
-//通信控制
+//communication control
 BOOL isDiagAppCanAppTx(void);
 BOOL isDiagAppCanAppRx(void);
 BOOL isDiagAppCanNMTx(void);
 BOOL isDiagAppCanNmRx(void);
 
-//DTC开关
+//DTC switch
 BOOL isDiagAppDtcOn(void);
 
 //config info handle

@@ -40,9 +40,9 @@
 */
 #define	canappDTC_NUM					3
 
-#define	canappDTC_4A0_CYCLE_TIME		10//5+5		//周期是50ms
-#define	canappDTC_3A0_CYCLE_TIME		4// 2+2		//周期是20ms
-#define	canappDTC_620_CYCLE_TIME		20//10+10		//周期是100ms
+#define	canappDTC_4A0_CYCLE_TIME		10//5+5		//cycle time 50ms
+#define	canappDTC_3A0_CYCLE_TIME		4// 2+2		//cycle time 20ms
+#define	canappDTC_620_CYCLE_TIME		20//10+10	//cycle time 100ms
 
 #define	canappDTC_FAIL_COUNT			10
 #define	canappDTC_SUCCESS_COUNT		5
@@ -269,8 +269,8 @@ static void vCanDtcTask(void)
 
 	if((SYSTEM_ACC_IDLE != vSystemAccStatus()) || isCanBusOff())
 	{
-		//acc或者BAT正常时才检测can lost，防止断acc 或者bat时由于其他节点关闭时间不一致导致出现can lost DTC
-		//busoff时不检测节点丢失
+		//detect at acc and B+ normal working, avoid can lost DTC because of power abnormity
+		//donot detect node lost at state busoff
 		vCanDtcStop();
 		return;
 	}

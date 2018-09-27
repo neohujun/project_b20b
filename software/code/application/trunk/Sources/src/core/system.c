@@ -85,7 +85,7 @@ void vSystemInit(void)
 	vSoftTimerInit();
 	vKeyInit();
 	vApuInit();
-//APP不使用EEPROM，只有diag会使用，所以去掉，要不会影响上电时间
+//APP donot use eeprom, rm it to accelerate for start up
 //	vMemoryAllRead();
 	
 	vPwmStart();
@@ -129,7 +129,7 @@ void vSystemTask(void)
 
 	vDiagAppTask();
 
-	//第四版硬件才支持网络管理的睡眠唤醒
+	//wakeup of networking will not be supported until hardware version 4
 
 	vNMTask();
 
@@ -164,9 +164,8 @@ void vSystemTimer(void)
 
 
 /* \brief
-	开机快速进入倒车
+	speed up enter reversing after start up 
 */
-
 void vSystemQuickReverse(void)
 {
 /*
@@ -179,17 +178,17 @@ void vSystemQuickReverse(void)
 }
 
 /* \brief
-	恢复全部出厂设置, 然后重启
+	restart when restore factory setting complete
 */
 void vSystemRestoreAllDefault(void)
 {
 //	vAmpMuteSoftware(TRUE);
 
-	//延时后再重启，防止用户感觉一点击恢复出厂设置就黑屏重启
+	//delay restarting, avoid ueser feel too fast
 }
 
 /* \brief
-	恢复出厂设置，不重启
+	not restart when restore factory setting comlete
 */
 void vSystemRestoreDefault(void)
 {
@@ -199,7 +198,7 @@ void vSystemRestoreDefault(void)
 	xSystemPowerState.Bits.AccStatus = SYSTEM_STATUS_ACC_ON;
 	//source
 
-	//reset后重新同步
+	//resynchronizate after reset
 	isSystemInitCompleted = FALSE;
 
 //	ioAUDIO_AMP_MUTE_OFF;
@@ -216,7 +215,6 @@ void vSystemRestoreInit(void)
 	vKeyInit();
 	vApuInit();
 	vInsAppTaskInit();
-//APP不使用EEPROM，只有diag会使用，所以去掉，要不会影响上电时间
 //	vMemoryAllRead();
 	
 	vPwmStart();
@@ -325,7 +323,7 @@ static void vSystemAccTask(void)
 				IOBLcdControl(OFF);
 				isMonitorOn = FALSE;
 
-				// 1.2s后满足睡眠
+				//allow sleep after timeout 1.2s
 				vNMSleepAllow(TRUE);
 
 				wSystemAccDelayTimer = 1000;
@@ -391,7 +389,7 @@ static void vSystemAccTask(void)
 				break;
 			}
 			vPwmMonitorControl(FALSE, xApuSetting.xApuScreen.ScreenBrightness);
-			wSystemAccDelayTimer = 100;		//等待OS POWER OFF完成
+			wSystemAccDelayTimer = 100;		//waitting for OS power off complete
 			ioAUDIO_AMP_STBY_L;
 			eSystemAccState = SYSTEM_ACC_OFF_DONE;
 			break;
@@ -454,7 +452,7 @@ static void vSystemAccTask(void)
 				PTBSC &= ~0x02;
 				PTBSC |= 0x04;		//clear PTBIF
 
-				//CAN唤醒退出
+				//CAN wakeup break the while
 				if(ioCAN_INH)
 				{
 					break;
@@ -462,10 +460,8 @@ static void vSystemAccTask(void)
 			}
 
 
-			//网络管理的唤醒时间需要<50ms,但上电的启动时间有60ms
-			//改成直接唤醒的时间为36ms，满足要求
-			//去掉break使唤醒后立即初始化
-//暂时量产不使用NM
+			//network management need wakeup time <50ms, but powerup starting time is 60ms
+			//use direct wake up, time is 36ms
 //#if 0
 			eSystemAccState = SYSTEM_ACC_ON;
 //#endif

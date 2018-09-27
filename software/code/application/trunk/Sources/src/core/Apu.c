@@ -362,7 +362,7 @@ static void vApuInfoHandle(void)
 		case APUR_GID_RECORD:
 			break;
 			
-		case APUR_GID_ERROR_RECORD:		//串口返回错误记录
+		case APUR_GID_ERROR_RECORD:		//uart return error record
 			if(0x01 == pInfo[6])
 			{
 				vApuWrite(APUW_GID_ERROR_RECORD, 0x01, (BYTE*)&xErrorRecord, sizeof(xErrorRecord));
@@ -418,7 +418,7 @@ static void vApuInitTask(void)
 
 			++ApuInitResetRetry;
 			
-			ApuDelaySecTimer = 250;		// 3;增加等待时间，防止因开启电源时间晚导致AWAKE信号在等待时间内未被设置
+			ApuDelaySecTimer = 250;		//add timer, prevent power later cause awake donot setting
 			ApuDelaySecCount = 0;		//clear second count
 			
 			eApuInitState = APU_INIT_IS_AWAKE;
@@ -682,7 +682,7 @@ static void vApuCommandHandle(BYTE* pData)
 
 		case UICC_MONITOR_OP:
 
-			//倒车时背光一直高亮，所以背光不能控制
+			//donot allow adjust backlight at reverse state
 			if(xApuwDeviceStatus.ReverseFlag)
 			{
 				break;
@@ -710,7 +710,7 @@ static void vApuCommandHandle(BYTE* pData)
 			vSystemRestoreDefault();
 			break;
 
-		case UICC_BEEP_ONLY_TS:			//没有beep音
+		case UICC_BEEP_ONLY_TS:			//none beep noise
 			break;
 
 		case UICC_SYS_STATE:
@@ -877,7 +877,7 @@ static void vApuSettingHandle(BYTE* pData)
 
 		case APUR_SET_SCREEN:
 			if((SYSTEM_ACC_IDLE != vSystemAccStatus())  || (!ioBAT_DET_IN))
-			{//开机，关机状态，不让APU控制背光防止闪屏
+			{//starting or shutting down donot control backlight to avoid flicking screen
 				return;
 			}
 			switch(pData[7])
@@ -928,7 +928,7 @@ static void vApuSettingHandle(BYTE* pData)
 }
 
 /* \brief
-	获取GPS时间
+	obtain GPS time
 */
 static void vApuTimeDataHandle(BYTE* pData)
 {

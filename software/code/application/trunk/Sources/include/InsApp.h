@@ -28,7 +28,7 @@ void vInsAppTask(void);
 void vInsAppTaskInit(void);
 void vInsAppTimer(void);
 
-//Í¨ÐÅ¿ØÖÆ
+//communication control
 BOOL isInsAppCanNMTx(void);
 BOOL isInsAppCanNmRx(void);
 

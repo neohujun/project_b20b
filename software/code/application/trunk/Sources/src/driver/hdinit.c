@@ -116,7 +116,7 @@ static void HdinitApuPowerOn(void)
 //	}
 
 
-	//核心板上电要等待电源稳定，然后再上SYSTEM5V即GPS5V,防止GPS5V影响核心板上电时序
+	//must waiting stable of ARM power up, than system5V on,
 	ioAPU_POWER_ON;
 	
 
@@ -130,8 +130,8 @@ static void HdinitApuPowerOn(void)
 
 	Delay(5000);		//10ms
 
-	//system 3.3v给倒车检测脚上拉
-	vSystemQuickReverse();			//从上常电到倒车检测有40ms
+	//system 3.3v for reverse detect
+	vSystemQuickReverse();			//power up to reverse detect is 40ms
 }
 
 

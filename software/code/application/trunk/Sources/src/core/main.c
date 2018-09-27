@@ -1,7 +1,7 @@
 /******************************************************************************
 **
 **								Copyright (C) 2015  
-**				Smartauto（China） Automotive Information System Co.,Ltd.
+**				Smartauto(China) Automotive Information System Co.,Ltd.
 **								All rights reserved.
 **
 **----------------------------------File Info----------------------------------
@@ -45,7 +45,7 @@
 */
 void main(void)
 {
-	//从上电到进入main需要60ms
+	//enter main from B+ on will spend 60ms
 	vSystemInit();
 	
 	while(TRUE)

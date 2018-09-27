@@ -19,6 +19,7 @@
 /* \brief
 	include
 */
+#include "type.h"
 
 /* \brief
 	function declaration
@@ -26,6 +27,7 @@
 void vDisplayInit(void);
 void vDisplayTask(void);
 void vDisplayReset(void);
+BOOL bIsDispInitComplete(void);
 
 #endif
 

@@ -41,5 +41,10 @@ void vDisplayReset(void)
 	Tw8836_Reset();
 }
 
+BOOL bIsDispInitComplete(void)
+{
+	return getDispInitComplete();
+}
+
 
 

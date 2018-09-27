@@ -43,11 +43,12 @@
 /* \brief
 */
 //#define	softtimerSECOND_COUNT			100
-#define	softtimerTIMER_MAX_DECREASE	10
+#define	softtimerTIMER_MAX_DECREASE			10
 
 /* \brief
 */
 static BYTE SoftTimerSecCount;
+static BYTE SoftTimerMinCount;
 
 /* \brief
 */
@@ -91,6 +92,13 @@ void vSoftTimerTask(void)
 		if(softtimerSECOND_COUNT <= ++SoftTimerSecCount)
 		{
 			SoftTimerSecCount -= softtimerSECOND_COUNT;
+			vApuTimerSecond();
+
+			if(softtimerMINUTE_COUNT <= ++SoftTimerMinCount)
+			{
+				SoftTimerMinCount -= softtimerMINUTE_COUNT;
+				vApuTimerMinute();
+			}
 		}
 	}
 }

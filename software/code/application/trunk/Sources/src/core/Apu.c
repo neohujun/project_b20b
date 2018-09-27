@@ -94,9 +94,11 @@ BOOL isMonitorOn = FALSE;
 ApuSetting xApuSetting;
 ApuwDeviceStatus xApuwDeviceStatus;
 ApurDeviceStatus xApurDeviceStatus;
+enumApuwMcuOsUpdate eApuwMcuOsUpdate;
 
 static enumApuInitState eApuInitState = APU_INIT_POWER_ON;
 static BOOL isApuInitComplete = FALSE;
+static BOOL isApuUpdateStart = FALSE;
 static BYTE ApuInitResetRetry = 0;
 static BYTE ApuInitAwakeRetry = 0;
 static BYTE ApuDelayMsTimer = 0;
@@ -111,6 +113,8 @@ static BOOL isApuInitTwice = FALSE;
 
 static BOOL isApuMcuUpdate = FALSE;
 static BYTE ApuMcuUpdateTimeoutTimer = 0;
+static BYTE ApuOsUpdateRestartTimer = 0;
+static BYTE ApuOsUpdateTimeoutTimer = 0;
 
 
 static BYTE ApuUsbCtlDelayTimer = 0;
@@ -155,8 +159,12 @@ void vApuInit(void)
 	
 	eApuInitState = APU_INIT_POWER_ON;
 	isApuInitComplete = FALSE;
+	isApuUpdateStart = FALSE;
+	eApuwMcuOsUpdate = APUW_MCU_OS_UPDATE_IDEL;
 	ApuInitResetRetry = 0;
 	ApuInitAwakeRetry = 0;
+	ApuOsUpdateTimeoutTimer = 0;
+	ApuOsUpdateRestartTimer = 0;
 
 	isApuOsReady = FALSE;
 	isMonitorOn = FALSE;
@@ -230,6 +238,37 @@ void vApuTimer(void)
 }
 
 /* \brief
+*/
+void vApuTimerSecond(void)
+{
+	if(0 != ApuOsUpdateRestartTimer)
+	{
+		if(isApuUpdateStart && (SYSTEM_ACC_IDLE == vSystemAccStatus()) && (ioBAT_DET_IN))
+		{
+			if(--ApuOsUpdateRestartTimer == 0)
+			{
+				isApuUpdateStart = FALSE;
+				vResetMcuJumpBgnd();
+			}
+		}
+	}
+}
+
+/* \brief
+*/
+void vApuTimerMinute(void)
+{
+	if(0 != ApuOsUpdateTimeoutTimer)
+	{
+		if(--ApuOsUpdateTimeoutTimer == 0)
+		{
+			isApuUpdateStart = FALSE;
+			eApuwMcuOsUpdate = APUW_MCU_OS_UPDATE_IDEL;
+		}
+	}
+}
+
+/* \brief
 	pData:group id+sub id+data
 */
 void vApuWrite(BYTE GroupId, BYTE SubId, BYTE* pData, BYTE length)
@@ -244,6 +283,13 @@ void vApuWrite(BYTE GroupId, BYTE SubId, BYTE* pData, BYTE length)
 BOOL isApuInit(void)
 {
 	return isApuInitComplete;
+}
+
+/* \brief
+*/
+enumApuwMcuOsUpdate isApuUpdate(void)
+{
+	return eApuwMcuOsUpdate;
 }
 
 /* \brief
@@ -544,6 +590,11 @@ static void vApuInitTask(void)
 			}
 			vDiagAppTxVinTask();
 			ApuDelayMsTimer = softtimerMILLISECOND(50);
+			if(!isMonitorOn)
+			{
+				IOBLcdControl(ON);
+				isMonitorOn = TRUE;
+			}
 			eApuInitState = APU_INIT_DONE;
 			break;
 			
@@ -754,6 +805,22 @@ static void vApuSysInfoHandle(BYTE* pData)
 				case APUR_STATUS_IPOD_AUDIO_ANALOG:
 				case APUR_STATUS_IPOD_AUDIO_DIGITAL:
 				case APUR_STATUS_SETUP_PASS_OK:
+				case APUR_STATUS_APU_REQ_UPDATE:
+					break;
+
+				case APUR_STATUS_APU_UPDATE_START:
+					eApuwMcuOsUpdate = APUW_MCU_OS_UPDATE_START;
+					isApuUpdateStart = TRUE;
+					ApuOsUpdateTimeoutTimer = 5;
+					break;
+
+				case APUR_STATUS_APU_UPDATE_END:
+					eApuwMcuOsUpdate = APUW_MCU_OS_UPDATE_END;
+					ApuOsUpdateRestartTimer = 2;
+					break;
+
+				case APUR_STATUS_APU_SYS_UNLOCKED:
+				case APUR_STATUS_APU_SYS_LOCKED:
 				default:
 					break;
 			}

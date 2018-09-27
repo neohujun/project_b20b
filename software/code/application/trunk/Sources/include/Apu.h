@@ -76,6 +76,16 @@ typedef enum
 }enumApuRCanCtl;
 
 /* \brief
+	APUW_GID_SYS_INFO
+*/
+typedef enum
+{
+	APUW_MCU_OS_UPDATE_IDEL				=0x00,
+	APUW_MCU_OS_UPDATE_START,
+	APUW_MCU_OS_UPDATE_END
+}enumApuwMcuOsUpdate;
+
+/* \brief
 	APUW_GID_MCU_UPDATE
 */
 typedef enum
@@ -116,7 +126,7 @@ typedef enum
 /* \brief
 */
 #define	apuMONITOR_BRIGHTNESS			pwmMONITOR_BRIGHTNESS_MIDDLE
-#define	apuWATCHDOG_TIMER				1200
+#define	apuWATCHDOG_TIMER				2000//20180912 OS soft wdog timeout, avoid restart twice because of framwork hang up
 
 /* \brief
 */
@@ -133,8 +143,11 @@ extern BOOL isApuCanUpdate;
 void vApuInit(void);
 void vApuTask(void);
 void vApuTimer(void);
+void vApuTimerSecond(void);
+void vApuTimerMinute(void);
 void vApuWrite(BYTE GroupId, BYTE SubId, BYTE* pData, BYTE length);		//group id+sub id+data
 BOOL isApuInit(void);
+enumApuwMcuOsUpdate isApuUpdate(void);
 void vApuWriteBuffClear(void);
 void vApuWatchDogFeed(void);
 void vApuWatchDogEnable(BOOL enable);

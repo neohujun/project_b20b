@@ -23,6 +23,7 @@
 #define	softtimerTEN_MILLISECOND_COUNT		1
 #define	softtimerTIMER_UNIT					10
 #define	softtimerSECOND_COUNT				100							// 1S count value
+#define	softtimerMINUTE_COUNT				60							// 1M count value
 #define	softtimerMILLISECOND(timer)			(timer/softtimerTIMER_UNIT)	//count/10 because timer unit is 10ms
 
 /* \brief

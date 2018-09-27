@@ -101,6 +101,10 @@ static void vTw88xxInitTask(void)
 	switch(VideoSubCtl)
 	{
 		case TW8836_INIT_STATE_WAIT:
+			if(0 != wTw88xxDelayTimer)
+			{
+				break;
+			}
 			ioTw88xx_RESET_L;
 			wTw88xxDelayTimer = 50;
 			VideoSubCtl = TW8836_INIT_STATE_HOLD;
@@ -237,6 +241,8 @@ static void Tw8836_ChannelCtrlLvds(void)
 
 void Tw8836_Reset(void)
 {
+	ioTw88xx_RESET_H;
+	wTw88xxDelayTimer = 50;
 	VideoSubCtl = TW8836_INIT_STATE_WAIT;
 }
 

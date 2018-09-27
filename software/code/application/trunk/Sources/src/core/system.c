@@ -258,11 +258,7 @@ static void vSystemBatTask(void)
 	{
 		if(!ioBAT_DET_IN)
 		{
-			if(80 == SystemBatErrorTimer)
-			{
-				vDisplayReset();
-			}
-			else if(0 == SystemBatErrorTimer)
+			if(0 == SystemBatErrorTimer)
 			{
 				vAmpMuteHardware(ON);
 				IOBLcdControl(OFF);
@@ -278,7 +274,12 @@ static void vSystemBatTask(void)
 		}
 		else
 		{
-			isSystemBatError = FALSE;
+			if(SystemBatErrorTimer >= 80)
+			{
+				vDisplayReset();
+				wSystemAccDelayTimer = 0;
+				isSystemBatError = FALSE;
+			}
 		}
 	}
 }
@@ -311,7 +312,7 @@ static void vSystemAccTask(void)
 			break;
 
 		case SYSTEM_ACC_OFF_CHK:
-			if(0 == wSystemAccDelayTimer)
+			if((0 == wSystemAccDelayTimer) && (APUW_MCU_OS_UPDATE_START != isApuUpdate()))
 			{
 				BYTE data[2] ={0};
 				data[0] = UICC_PWR_STATE;

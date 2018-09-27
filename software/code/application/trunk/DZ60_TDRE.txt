@@ -1,2 +1,5 @@
-1.TDRE/TC关系，当发送缓冲寄存器为空时，发送完成时才会产生TC中断;
-2.TE=0后不会立即将管脚恢复成GPIO，需要等发送器完成所有操作进入空闲模式时才会恢复为GPIO
+1.TDRE/TC relationship:
+	When the transmit buffer register is empty, the TC interrupt will be creat after transmit completed;
+2.The pin will not be restored to GPIO immediately when TE = 0, until the sender completed all oprations and enters idle mode
+
+

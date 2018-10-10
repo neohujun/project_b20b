@@ -36,7 +36,7 @@ BOOL isForceWrite = FALSE;
 **********************************************************************************************************************/
 void main(void)
 {
-	MCU_init();
+//	MCU_init();
 	
 	SystemInit();
 	
@@ -104,6 +104,8 @@ void PrepareStartup(void)
 		}
 		else
 		{
+			MCU_init();
+			SystemHardwareInit();
 			main();
 		}
 //	}

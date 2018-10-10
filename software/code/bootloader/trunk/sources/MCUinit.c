@@ -130,7 +130,7 @@ void MCU_init(void)
   TPM1SC = 0x0B;                       /* Int. flag clearing (2nd part) and timer control register setting */
   TPM1C4V = 0x4E20;
   /* ### */
-  asm CLI;                             /* Enable interrupts */
+//  asm CLI;                             /* Enable interrupts */
 } /*MCU_init*/
 
 
@@ -145,12 +145,12 @@ const unsigned char NVPROT_INIT @0x0000FFBD = 0xFD;
 
 /* NVOPT: KEYEN=1,FNORED=0,EPGMOD=1,SEC1=0,SEC0=0 */
 #ifdef	__CMM__
-const unsigned char NVOPT_INIT @0x0000FFBF = 0x3E;		// CMM 去掉加密
+const unsigned char NVOPT_INIT @0x0000FFBF = 0x3E;			// CMM unencrypted
 #else
 //#ifdef	__DEBUG__
-const unsigned char NVOPT_INIT @0x0000FFBF = 0x3E;		// DEBUG 去掉加密
+//const unsigned char NVOPT_INIT @0x0000FFBF = 0x3E;		// DEBUG unencrypted
 //#else
-//const unsigned char NVOPT_INIT @0x0000FFBF = 0xBC;
+const unsigned char NVOPT_INIT @0x0000FFBF = 0xBC;			//encrypt
 //#endif
 #endif
 

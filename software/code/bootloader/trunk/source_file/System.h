@@ -31,12 +31,15 @@
 #define	systemVERSION_D				14
 #else
 #define	systemVERSION_Y				18
-#define	systemVERSION_M				9
-#define	systemVERSION_D				10
+#define	systemVERSION_M				10
+#define	systemVERSION_D				9
 #endif
 
 #define	systemACC_IN_INIT				(PTBDD_PTBDD4 = 0)
 #define	systemACC_IN					(PTBD_PTBD4 == 0)
+
+#define	systemBAT_IN_INIT				(PTBDD_PTBDD2 = 0)
+#define	systemBAT_IN					(PTBD_PTBD2 == 1)
 
 #define	systemPOWER_INIT				{PTCDD_PTCDD3 = 1;\
 										 systemPOWER_ON;}
@@ -169,6 +172,7 @@ extern UINT08 SystemReqState;
 void SystemTask(void);
 
 void SystemInit(void);
+void SystemHardwareInit(void);
 void SystemFortyMSecTimer(void);
 
 #endif

@@ -18,7 +18,6 @@
 **	Include Files
 **********************************************************************************************************************/
 #include "System.h"
-
 #include "DRV_COM.h"
 #include "Flash.h"
 #include "Timer.h"
@@ -270,7 +269,7 @@ void SystemTask(void)
 	SystemReqTask();
 
 #ifndef	__CMM__
-	if(!systemACC_IN)
+	if(!systemBAT_IN)
 	{
 		asm(BGND);
 	}
@@ -303,6 +302,7 @@ void SystemInit(void)
 	sytemHDPOWER_INIT;
 	systemRGB_POWER_INIT;
 #else
+/*
 	//等待ACC上电，防止断ACC时不停的重启
 	while(!systemACC_IN)
 	{
@@ -328,11 +328,11 @@ void SystemInit(void)
 	systemAPU_RESET_INIT;
 	TimerWait(5000);
 	systemPOWER_INIT;
+*/
 #endif
 	
 	DRV_COM2PortInit();
 	DRV_COM2Init();
-	vIICInit(0x00);
 	FlashInit();
 	
 	system_para.rx_state = SYSTEM_RXMSG_SENDER;
@@ -356,21 +356,62 @@ void SystemInit(void)
 	soft_timer_para.u40ms_timer = 0;
 
 	
-    ioTw88xx_RESET_H;
 	//等待核心板启动
 	TimerWait(50000);
-	TimerWait(50000);
-	TimerWait(50000);
-	TimerWait(50000);
-	TimerWait(50000);
-	TimerWait(50000);
-	TimerWait(50000);
-	TimerWait(50000);
-	
+
 	systemMONITOR_ON;
-	vIICWriteDrvConfig();
-	
+
 	return;
+}
+
+
+/**********************************************************************************************************************
+**	Func Name:		void SystemHardwareInit(void)
+**	Parameters:		void
+**	Return Value:	void
+**	Abstract:		system init
+**********************************************************************************************************************/
+void SystemHardwareInit(void)
+{
+	systemACC_IN_INIT;
+	systemBAT_IN_INIT;
+	TimerWait(5000);
+	//wait for ACC ok, prevent loop of restart
+	while((!systemACC_IN) || (!systemBAT_IN))
+	{
+		__RESET_WATCHDOG();
+	}
+	ioTw88xx_RESET_INIT;
+	systemMONITOR_VGHL_INIT;
+	systemMONITOR_POWER_INIT;
+//	systemAPU_HW_RESET_INIT;
+//	systemUSB_DVD_POWER_INIT;
+	systemAUDIO_AMP_MUTE_INIT;
+	systemAUDIO_AMP_STBY_INIT;
+	systemAUDIO_MUTE_INIT;
+	systemAPU_BACK_INIT;
+	systemUSB_CONTROL_HOST1_INIT;
+	systemUSB_CONTROL_HOST2_INIT;
+//	systemFORCE_FLASH_WRITE_INIT;
+	TimerWait(5000);
+	systemAPU_AWAKE_SLEEP_INIT;
+	systemAPU_POWER_INIT;
+	TimerWait(5000);
+	systemAPU_RESET_INIT;
+	TimerWait(5000);
+	systemPOWER_INIT;
+
+	vIICInit(0x00);
+	TimerWait(50000);
+	ioTw88xx_RESET_H;
+	TimerWait(50000);
+	TimerWait(50000);
+	TimerWait(50000);
+	TimerWait(50000);
+	TimerWait(50000);
+	TimerWait(50000);
+	TimerWait(50000);
+	vIICWriteDrvConfig();
 }
 
 /**********************************************************************************************************************
@@ -772,6 +813,10 @@ static void SystemChkFlashWCompTask(void)
 		__RESET_WATCHDOG();
 		
 		UserResetFunc();
+	}
+	else if(!systemACC_IN)
+	{
+		asm(BGND);
 	}
 	
 	return;

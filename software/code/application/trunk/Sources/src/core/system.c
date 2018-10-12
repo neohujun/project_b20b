@@ -497,10 +497,10 @@ static void vSystemExternSignalDetectTask(void)
 */
 static void vSystemApuStatusDetect(BOOL isApuSleep)
 {
-	if((SYSTEM_ACC_IDLE != vSystemAccStatus())  || (!ioBAT_DET_IN))
-	{
-		return;
-	}
+//	if((SYSTEM_ACC_IDLE != vSystemAccStatus())  || (!ioBAT_DET_IN) || (APUW_MCU_OS_UPDATE_START == isApuUpdate()))
+//	{
+//		return;
+//	}
 
 	if(isApuSleep)
 	{
@@ -516,8 +516,11 @@ static void vSystemApuStatusDetect(BOOL isApuSleep)
 	{
 		if(!xApuwDeviceStatus.LCDDisp)
 		{
-			IOBLcdControl(ON);
-			xApuwDeviceStatus.LCDDisp = TRUE;
+			if(((SYSTEM_ACC_IDLE == vSystemAccStatus())  && (ioBAT_DET_IN)) || (APUW_MCU_OS_UPDATE_START == isApuUpdate()))
+			{
+				IOBLcdControl(ON);
+				xApuwDeviceStatus.LCDDisp = TRUE;
+			}
 		}
 	}
 }

@@ -23,7 +23,7 @@
 
 /* \brief
 */
-#define	verVERION					"V1.12"
+#define	verVERION					"V1.14"
 #define	verVERION_MAX_NUM			5
 
 

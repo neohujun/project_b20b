@@ -590,7 +590,7 @@ static void vApuInitTask(void)
 			}
 			vDiagAppTxVinTask();
 			ApuDelayMsTimer = softtimerMILLISECOND(50);
-			if(!isMonitorOn)
+			if(!isMonitorOn && (SYSTEM_ACC_IDLE == vSystemAccStatus())  && (ioBAT_DET_IN))
 			{
 				IOBLcdControl(ON);
 				isMonitorOn = TRUE;
@@ -646,7 +646,7 @@ static void vApuCommandHandle(BYTE* pData)
 					vApuWrite(APUW_GID_SYS_INFO, APUW_SYSINFO_DEVICE_STATUS, (BYTE*)&xApuwDeviceStatus, sizeof(xApuwDeviceStatus));
 					break;
 				case 0x02:
-					if(vSystemAccStatus() == SYSTEM_ACC_IDLE)
+					if((vSystemAccStatus() == SYSTEM_ACC_IDLE) || (APUW_MCU_OS_UPDATE_START == isApuUpdate()))
 					{
 						vAmpMuteHardware(ON);
 					}
@@ -812,8 +812,9 @@ static void vApuSysInfoHandle(BYTE* pData)
 					eApuwMcuOsUpdate = APUW_MCU_OS_UPDATE_START;
 					isApuUpdateStart = TRUE;
 					ApuOsUpdateTimeoutTimer = 5;
+					vApuWatchDogEnable(OFF);
 					break;
-
+					
 				case APUR_STATUS_APU_UPDATE_END:
 					eApuwMcuOsUpdate = APUW_MCU_OS_UPDATE_END;
 					ApuOsUpdateRestartTimer = 2;

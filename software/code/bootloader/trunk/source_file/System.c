@@ -268,12 +268,10 @@ void SystemTask(void)
 	SystemFlashWriteTask();
 	SystemReqTask();
 
-#ifndef	__CMM__
 	if(!systemBAT_IN)
 	{
 		asm(BGND);
 	}
-#endif
 	
 	return;
 }
@@ -303,12 +301,6 @@ void SystemInit(void)
 	systemRGB_POWER_INIT;
 #else
 /*
-	//等待ACC上电，防止断ACC时不停的重启
-	while(!systemACC_IN)
-	{
-		__RESET_WATCHDOG();
-	}
-	ioTw88xx_RESET_INIT;
 	systemMONITOR_VGHL_INIT;
 	systemMONITOR_POWER_INIT;
 //	systemAPU_HW_RESET_INIT;
@@ -340,8 +332,7 @@ void SystemInit(void)
 
 	system_para.tx_msg.sender = SYSTEM_RX_RECEIVER;
 	system_para.tx_msg.receiver = SYSTEM_RX_SENDER;
-	
-	system_para.flash_w_timeout_ms_timer = Timer_6000_MS;
+	system_para.flash_w_timeout_ms_timer = Timer_10000_MS;
 //	system_para.flash_w_state = SYSTEM_FLASH_WRITE_IDLE;
 	system_para.isMcuUpdatePrepare = FALSE;
 	system_para.opr_retry_cnt = 0;
@@ -358,12 +349,10 @@ void SystemInit(void)
 	
 	//等待核心板启动
 	TimerWait(50000);
-
 	systemMONITOR_ON;
-
+	
 	return;
 }
-
 
 /**********************************************************************************************************************
 **	Func Name:		void SystemHardwareInit(void)
@@ -382,6 +371,7 @@ void SystemHardwareInit(void)
 		__RESET_WATCHDOG();
 	}
 	ioTw88xx_RESET_INIT;
+
 	systemMONITOR_VGHL_INIT;
 	systemMONITOR_POWER_INIT;
 //	systemAPU_HW_RESET_INIT;
@@ -402,6 +392,7 @@ void SystemHardwareInit(void)
 	systemPOWER_INIT;
 
 	vIICInit(0x00);
+
 	TimerWait(50000);
 	ioTw88xx_RESET_H;
 	TimerWait(50000);
@@ -616,7 +607,7 @@ static void SystemFlashWriteTask(void)
 
 			}
 			
-			system_para.flash_w_timeout_ms_timer = Timer_6000_MS;
+			system_para.flash_w_timeout_ms_timer = Timer_10000_MS;
 			break;
 			
 		case SYSTEM_FLASH_WRITE_PROGRAM:
@@ -635,7 +626,7 @@ static void SystemFlashWriteTask(void)
 				++system_para.opr_retry_cnt;
 			}
 			
-			system_para.flash_w_timeout_ms_timer = Timer_6000_MS;
+			system_para.flash_w_timeout_ms_timer = Timer_10000_MS;
 			break;
 	}
 	
@@ -915,7 +906,7 @@ static void SystemReqTask(void)
 			system_para.tx_msg.data[0] = 0x02;		//app
 			SystemWrite(&system_para.tx_msg);
 			
-			SystemUpdateReqTimeoutTimer = 100;
+			SystemUpdateReqTimeoutTimer = Timer_1000_MS;
 			break;
 
 		case 2:
@@ -945,7 +936,7 @@ static void SystemReqTask(void)
 			system_para.tx_msg.data[2] = (SystemUpdatePacketID>>8)&0xff;
 			SystemWrite(&system_para.tx_msg);
 
-			SystemUpdateReqTimeoutTimer = 100;
+			SystemUpdateReqTimeoutTimer = Timer_1000_MS;
 			break;
 
 		default:

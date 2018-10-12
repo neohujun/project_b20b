@@ -19,6 +19,7 @@
 #define __NO_MAIN_OFFSET    /* we do not need the main field in the startup data descriptor */
 
 #include <start08.h>
+#include "MCUinit.h"
 
 #ifdef __cplusplus
 #define __EXTERN_C  extern "C"
@@ -330,6 +331,8 @@ void FlashWriteStartup(void)
 	SystemReqState = 2;		//earse
 	
 	__RESET_WATCHDOG();
+
+	MCU_init();
 	
 	//from app
 	main();

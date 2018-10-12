@@ -95,6 +95,7 @@ void PrepareStartup(void)
 	}
 	else
 	{*/
+		
 		if((unsigned short)UserResetFunc < SYSTEM_FLASH_ADDR_MAX)
 		{
 			__RESET_WATCHDOG();

@@ -381,8 +381,11 @@ static void vSystemAccTask(void)
 					{
 						vNMSleepAllow(FALSE);
 					}
-					wSystemAccDelayTimer = 150;
-					eSystemAccState = SYSTEM_ACC_ON_WAIT;
+					IOBLcdControl(ON);
+					isMonitorOn = TRUE;
+					vApuWatchDogFeed();
+					wSystemAccDelayTimer = 0;
+					eSystemAccState = SYSTEM_ACC_IDLE;
 				}
 			}
 
@@ -525,6 +528,7 @@ static void vSystemApuStatusDetect(BOOL isApuSleep)
 		{
 			vAmpMuteHardware(ON);
 			IOBLcdControl(OFF);
+			isMonitorOn = FALSE;
 			xApuwDeviceStatus.LCDDisp = FALSE;
 			vApuWatchDogEnable(OFF);
 		}
@@ -536,6 +540,7 @@ static void vSystemApuStatusDetect(BOOL isApuSleep)
 			if(((SYSTEM_ACC_IDLE == vSystemAccStatus())  && (ioBAT_DET_IN)) || (APUW_MCU_OS_UPDATE_START == isApuUpdate()))
 			{
 				IOBLcdControl(ON);
+				isMonitorOn = TRUE;
 				xApuwDeviceStatus.LCDDisp = TRUE;
 			}
 		}

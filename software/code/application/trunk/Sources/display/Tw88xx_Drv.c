@@ -101,12 +101,8 @@ static void vTw88xxInitTask(void)
 	switch(VideoSubCtl)
 	{
 		case TW8836_INIT_STATE_WAIT:
-			if(0 != wTw88xxDelayTimer)
-			{
-				break;
-			}
 			ioTw88xx_RESET_L;
-			wTw88xxDelayTimer = 50;
+			wTw88xxDelayTimer = 10;
 			VideoSubCtl = TW8836_INIT_STATE_HOLD;
 			break;
 
@@ -225,10 +221,11 @@ void Tw8836_SwitchChannel(tw8836_channel_enum Vch)
 
 static void Tw8836_ChannelCtrlLvds(void)
 {
-	WORD i;
+	WORD i,j;
 	i = 0;
+	j = 0;
 
-  	while(TRUE)
+  	while(j < 5000)
 	{
 		if((0xFF == Tw8836_LvdsIn_Para[i]) && (0xFE == Tw8836_LvdsIn_Para[i + 1]))
 		{
@@ -236,21 +233,23 @@ static void Tw8836_ChannelCtrlLvds(void)
 		}
 		tw8836I2CWrite(Tw8836_LvdsIn_Para[i],Tw8836_LvdsIn_Para[i + 1]);
 		i += 2;
+		j++;
 	}
 }
 
 void Tw8836_Reset(void)
 {
-	ioTw88xx_RESET_H;
-	wTw88xxDelayTimer = 50;
+	isDispInitComplete = FALSE;
 	VideoSubCtl = TW8836_INIT_STATE_WAIT;
 }
 
 static void Tw8836_ChannelCtrl360(void)
 {
-	WORD i;
+	WORD i,j;
 	i = 0;
-	while(TRUE)
+	j = 0;
+	
+	while(j < 5000)
 	{
 		if((0xFF == Tw8836_360In_Para[i]) && (0xFE == Tw8836_360In_Para[i + 1]))
 		{
@@ -258,6 +257,7 @@ static void Tw8836_ChannelCtrl360(void)
 		}
 		tw8836I2CWrite(Tw8836_360In_Para[i],Tw8836_360In_Para[i + 1]);
 		i += 2;
+		j++;
 	}
 }
 

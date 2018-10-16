@@ -329,7 +329,7 @@ static void vSystemAccTask(void)
 				wSystemAccDelayTimer = 1000;
 				eSystemAccState = SYSTEM_ACC_OFF;
 			}
-			else if(ioACC_IN)
+			else if(ioACC_IN || (APUW_MCU_OS_UPDATE_START == isApuUpdate()))
 			{
 				wSystemAccDelayTimer = 0;
 				eSystemAccState = SYSTEM_ACC_IDLE;
@@ -349,26 +349,43 @@ static void vSystemAccTask(void)
 				wSystemAccDelayTimer = 400;
 				eSystemAccState = SYSTEM_ACC_OFF_WAIT;
 			}
-			else if(ioACC_IN)
+			else
 			{
-				BYTE data[2] ={0};
-				data[0] = UICC_PWR_STATE;
-				xSystemPowerState.Bits.AccStatus = SYSTEM_STATUS_ACC_ON;
-				data[1] = xSystemPowerState.Byte;
+				if(ioACC_IN)
+				{
+					BYTE data[2] ={0};
+					data[0] = UICC_PWR_STATE;
+					xSystemPowerState.Bits.AccStatus = SYSTEM_STATUS_ACC_ON;
+					data[1] = xSystemPowerState.Byte;
 
-				if(isNMSleep())
-				{
-					vNMTaskAwake(TRUE);
+					if(isNMSleep())
+					{
+						vNMTaskAwake(TRUE);
+					}
+					else
+					{
+						vNMSleepAllow(FALSE);
+					}
+					
+					vApuWrite(APUW_GID_CMD, APUW_CMD_COMMAND, data, 2);
+					wSystemAccDelayTimer = 150;
+					eSystemAccState = SYSTEM_ACC_ON_WAIT;
 				}
-				else
+				else if(APUW_MCU_OS_UPDATE_START == isApuUpdate())
 				{
-					vNMSleepAllow(FALSE);
+					if(isNMSleep())
+					{
+						vNMTaskAwake(TRUE);
+					}
+					else
+					{
+						vNMSleepAllow(FALSE);
+					}
+					wSystemAccDelayTimer = 150;
+					eSystemAccState = SYSTEM_ACC_ON_WAIT;
 				}
-				
-				vApuWrite(APUW_GID_CMD, APUW_CMD_COMMAND, data, 2);
-				wSystemAccDelayTimer = 150;
-				eSystemAccState = SYSTEM_ACC_ON_WAIT;
 			}
+
 			break;
 		case SYSTEM_ACC_ON_WAIT:
 			if(0 != wSystemAccDelayTimer)

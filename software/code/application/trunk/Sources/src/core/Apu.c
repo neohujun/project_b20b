@@ -811,7 +811,7 @@ static void vApuSysInfoHandle(BYTE* pData)
 				case APUR_STATUS_APU_UPDATE_START:
 					eApuwMcuOsUpdate = APUW_MCU_OS_UPDATE_START;
 					isApuUpdateStart = TRUE;
-					ApuOsUpdateTimeoutTimer = 5;
+					ApuOsUpdateTimeoutTimer = 8;
 					vApuWatchDogEnable(OFF);
 					break;
 					

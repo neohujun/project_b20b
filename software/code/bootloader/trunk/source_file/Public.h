@@ -126,7 +126,7 @@
 	#define	Timer_15_S				15
 #endif
 #ifndef	Timer_20_S
-	#define	Timer_20_S				20
+	#define	Timer_20_S				500
 #endif
 #ifndef	Timer_30_S
 	#define	Timer_30_S				30
@@ -135,7 +135,7 @@
 	#define	Timer_40_S				40
 #endif
 #ifndef	Timer_50_S
-	#define	Timer_50_S				50
+	#define	Timer_50_S				1250
 #endif
 #ifndef	Timer_60_S
 	#define	Timer_60_S				60

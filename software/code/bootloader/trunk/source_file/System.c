@@ -197,7 +197,7 @@ typedef struct
 	UINT16 program_addr;
 	
 	UINT08 rx_timeout_ms_timer;
-	UINT08 flash_w_timeout_ms_timer;
+	WORD flash_w_timeout_ms_timer;
 	UINT08 opr_retry_cnt;
 	BOOL isMcuUpdatePrepare;
 }SystemComParaArea;
@@ -332,7 +332,7 @@ void SystemInit(void)
 
 	system_para.tx_msg.sender = SYSTEM_RX_RECEIVER;
 	system_para.tx_msg.receiver = SYSTEM_RX_SENDER;
-	system_para.flash_w_timeout_ms_timer = Timer_10000_MS;
+	system_para.flash_w_timeout_ms_timer = Timer_20_S;
 //	system_para.flash_w_state = SYSTEM_FLASH_WRITE_IDLE;
 	system_para.isMcuUpdatePrepare = FALSE;
 	system_para.opr_retry_cnt = 0;
@@ -607,7 +607,7 @@ static void SystemFlashWriteTask(void)
 
 			}
 			
-			system_para.flash_w_timeout_ms_timer = Timer_10000_MS;
+			system_para.flash_w_timeout_ms_timer = Timer_20_S;
 			break;
 			
 		case SYSTEM_FLASH_WRITE_PROGRAM:
@@ -626,7 +626,7 @@ static void SystemFlashWriteTask(void)
 				++system_para.opr_retry_cnt;
 			}
 			
-			system_para.flash_w_timeout_ms_timer = Timer_10000_MS;
+			system_para.flash_w_timeout_ms_timer = Timer_50_S;
 			break;
 	}
 	
@@ -936,7 +936,7 @@ static void SystemReqTask(void)
 			system_para.tx_msg.data[2] = (SystemUpdatePacketID>>8)&0xff;
 			SystemWrite(&system_para.tx_msg);
 
-			SystemUpdateReqTimeoutTimer = Timer_1000_MS;
+			SystemUpdateReqTimeoutTimer = Timer_3000_MS;
 			break;
 
 		default:
@@ -1094,13 +1094,13 @@ static void SystemDecData(void)
 					{
 						++SystemUpdatePacketID;
 						isUpdateReqDataPause = FALSE;
-						SystemUpdateReqTimeoutTimer = 0;
+						SystemUpdateReqTimeoutTimer = Timer_80_MS;
 					}
 				}
 				else
 				{
 					isUpdateReqDataPause = FALSE;
-					SystemUpdateReqTimeoutTimer = 0;
+					SystemUpdateReqTimeoutTimer = Timer_80_MS;
 				}
 				DecState = 0;
 				--system_para.rx_msg.read_cnt;
@@ -1113,7 +1113,7 @@ static void SystemDecData(void)
 	}
 	++SystemUpdatePacketID;
 	isUpdateReqDataPause = FALSE;
-	SystemUpdateReqTimeoutTimer = 0;
+	SystemUpdateReqTimeoutTimer = Timer_80_MS;
 }
 
 /**********************************************************************************************************************
